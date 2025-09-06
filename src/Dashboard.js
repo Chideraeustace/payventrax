@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { auth } from './Firebase';
 import { signOut } from 'firebase/auth';
 import { FaStore, FaUsers, FaMoneyBillWave } from 'react-icons/fa';
-import { BiUserCircle, BiMenu, BiX } from 'react-icons/bi';
+import { BiUserCircle, BiMenu, BiX, BiLogOut } from 'react-icons/bi';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -163,9 +163,10 @@ const Dashboard = () => {
             onClick={handleLogout}
             whileHover={{ scale: 1.05, boxShadow: '0 0 15px rgba(234, 179, 8, 0.5)' }}
             whileTap={{ scale: 0.95 }}
-            className="py-2 px-5 bg-yellow-400 text-gray-900 font-semibold rounded-full shadow-lg transition-all duration-300"
+            className="p-2 bg-yellow-400 text-gray-900 rounded-full shadow-lg transition-all duration-300"
+            aria-label="Logout"
           >
-            Logout
+            <BiLogOut className="text-xl" />
           </motion.button>
           <button className="sm:hidden text-yellow-400 text-3xl focus:outline-none" onClick={toggleMenu}>
             {isMenuOpen ? <BiX /> : <BiMenu />}

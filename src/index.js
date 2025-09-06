@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { auth } from './Firebase';
@@ -6,12 +6,41 @@ import './index.css';
 import App from './App';
 import LoginPage from './LoginPage';
 import Dashboard from './Dashboard';
+import Payments from './components/PaymentSetup';
 import SignupPage from './Signup';
 import reportWebVitals from './reportWebVitals';
+import { motion } from 'framer-motion';
+
+// LoadingSpinner component
+const LoadingSpinner = () => {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black">
+      <motion.div
+        className="w-16 h-16 border-4 border-t-yellow-400 border-gray-700 rounded-full"
+        animate={{ rotate: 360 }}
+        transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+      />
+    </div>
+  );
+};
 
 // ProtectedRoute component to restrict access to authenticated users
 const ProtectedRoute = ({ children }) => {
-  const user = auth.currentUser;
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
   return user ? children : <Navigate to="/login" replace />;
 };
 
@@ -27,6 +56,14 @@ root.render(
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payments"
+          element={
+            <ProtectedRoute>
+              <Payments />
             </ProtectedRoute>
           }
         />
